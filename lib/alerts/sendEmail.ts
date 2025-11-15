@@ -10,7 +10,7 @@ export async function sendAlertEmail(
   const supabase = await createServiceRoleClient();
 
   // Get user info
-  const { data: user } = await supabase
+  const { data: user } = await (supabase as any)
     .from("users")
     .select("email, name")
     .eq("id", userId)
@@ -19,7 +19,7 @@ export async function sendAlertEmail(
   if (!user) return;
 
   // Get active guests
-  const { data: guests, error: guestsError } = await supabase
+  const { data: guests, error: guestsError } = await (supabase as any)
     .from("guests")
     .select("guest_email")
     .eq("user_id", userId)

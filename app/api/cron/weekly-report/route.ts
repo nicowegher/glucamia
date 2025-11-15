@@ -37,12 +37,11 @@ export async function GET(request: Request) {
         }
 
         // Get active guests
-        const { data: guests } = await supabase
+        const { data: guests } = await (supabase as any)
           .from("guests")
           .select("guest_email")
           .eq("user_id", user.id)
-          .eq("status", "active")
-          .returns<Pick<Guest, "guest_email">[]>();
+          .eq("status", "active");
 
         const recipients = [user.email, ...(guests?.map((g) => g.guest_email) || [])];
 
