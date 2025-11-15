@@ -28,13 +28,12 @@ export async function POST(request: Request) {
 
     // Check if guest already exists
     const serviceSupabase = await createServiceRoleClient();
-    const { data: existingGuest } = await serviceSupabase
+    const { data: existingGuest } = await (serviceSupabase as any)
       .from("guests")
       .select("*")
       .eq("user_id", user.id)
       .eq("guest_email", email)
-      .single()
-      .returns<Guest>();
+      .single();
 
     if (existingGuest) {
       return NextResponse.json(
@@ -47,7 +46,7 @@ export async function POST(request: Request) {
     const token = randomBytes(32).toString("hex");
 
     // Create guest record
-    const { data: guest, error: guestError } = await serviceSupabase
+    const { data: guest, error: guestError } = await (serviceSupabase as any)
       .from("guests")
       .insert({
         user_id: user.id,
@@ -56,20 +55,18 @@ export async function POST(request: Request) {
         token,
       })
       .select()
-      .single()
-      .returns<Guest>();
+      .single();
 
     if (guestError) {
       throw guestError;
     }
 
     // Get user info
-    const { data: userData } = await serviceSupabase
+    const { data: userData } = await (serviceSupabase as any)
       .from("users")
       .select("name, email")
       .eq("id", user.id)
-      .single()
-      .returns<Pick<User, "name" | "email">>();
+      .single();
 
     // Validate Gmail configuration
     if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {

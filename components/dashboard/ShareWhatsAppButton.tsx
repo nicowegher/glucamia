@@ -66,7 +66,16 @@ export default function ShareWhatsAppButton({
 
       // Check if Web Share API is available (mobile browsers)
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      const canShareFiles = navigator.share && navigator.canShare?.({ files: [file] });
+      let canShareFiles = false;
+      // @ts-expect-error - canShare check for Web Share API file support
+      if (navigator.share && navigator.canShare) {
+        try {
+          // @ts-expect-error - canShare may not be in all TypeScript definitions
+          canShareFiles = navigator.canShare({ files: [file] });
+        } catch (e) {
+          canShareFiles = false;
+        }
+      }
 
       // Try Web Share API first (mobile browsers with file sharing support)
       if (canShareFiles) {

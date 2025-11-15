@@ -18,12 +18,11 @@ export async function GET(request: Request) {
   } = await supabase.auth.getUser();
 
   if (user) {
-    const { data: userData } = await supabase
+    const { data: userData } = await (supabase as any)
       .from("users")
       .select("onboarding_completed")
       .eq("id", user.id)
-      .single()
-      .returns<Pick<User, "onboarding_completed">>();
+      .single();
 
     if (userData && !userData.onboarding_completed) {
       return NextResponse.redirect(new URL("/onboarding", request.url));

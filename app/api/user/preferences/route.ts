@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const { track_glucose, track_bp, track_medications, track_weight } = body;
 
     // Update preferences
-    const { error: prefError } = await supabase
+    const { error: prefError } = await (supabase as any)
       .from("user_preferences")
       .update({
         track_glucose: track_glucose ?? false,
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     }
 
     // Mark onboarding as completed
-    const { error: userError } = await supabase
+    const { error: userError } = await (supabase as any)
       .from("users")
       .update({ onboarding_completed: true })
       .eq("id", user.id);

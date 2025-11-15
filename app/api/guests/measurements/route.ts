@@ -17,12 +17,11 @@ export async function GET(request: Request) {
     const supabase = await createServiceRoleClient();
 
     // Find guest by token
-    const { data: guest, error: guestError } = await supabase
+    const { data: guest, error: guestError } = await (supabase as any)
       .from("guests")
       .select("user_id, status")
       .eq("token", token)
-      .single()
-      .returns<Pick<Guest, "user_id" | "status">>();
+      .single();
 
     if (guestError || !guest || guest.status !== "active") {
       return NextResponse.json(
@@ -32,13 +31,12 @@ export async function GET(request: Request) {
     }
 
     // Get measurements
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("measurements")
       .select("*")
       .eq("user_id", guest.user_id)
       .order("date", { ascending: false })
-      .limit(100)
-      .returns<Measurement[]>();
+      .limit(100);
 
     if (error) {
       throw error;

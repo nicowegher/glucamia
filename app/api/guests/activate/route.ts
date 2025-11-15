@@ -1,7 +1,6 @@
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { Guest } from "@/types";
-import { Database } from "@/types/database";
 
 export async function POST(request: Request) {
   try {
@@ -33,10 +32,10 @@ export async function POST(request: Request) {
     }
 
     // Activate guest
-    const { error: updateError } = await supabase
+    const { error: updateError } = await (supabase as any)
       .from("guests")
-      .update({ status: "active" } as Database["public"]["Tables"]["guests"]["Update"])
-      .eq("id", guest.id);
+      .update({ status: "active" })
+      .eq("id", (guest as Guest).id);
 
     if (updateError) {
       throw updateError;

@@ -70,7 +70,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("measurements")
       .insert({
         user_id: user.id,
@@ -82,8 +82,7 @@ export async function POST(request: Request) {
         label: label || null,
       })
       .select()
-      .single()
-      .returns<Measurement>();
+      .single();
 
     if (error) {
       throw error;
