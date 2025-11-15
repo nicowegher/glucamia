@@ -4,6 +4,7 @@ import { sendEmail } from "@/lib/email/client";
 import { NextResponse } from "next/server";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { User } from "@/types";
 
 export async function GET(request: Request) {
   try {
@@ -19,7 +20,8 @@ export async function GET(request: Request) {
     const { data: users } = await supabase
       .from("users")
       .select("id, email, name")
-      .eq("onboarding_completed", true);
+      .eq("onboarding_completed", true)
+      .returns<User[]>();
 
     if (!users || users.length === 0) {
       return NextResponse.json({ message: "No users to process" });
