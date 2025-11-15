@@ -35,7 +35,7 @@ export async function sendAlertEmail(
     return;
   }
 
-  console.log(`📧 Sending alert emails to ${guests.length} active guest(s):`, guests.map(g => g.guest_email));
+  console.log(`📧 Sending alert emails to ${guests.length} active guest(s):`, guests.map((g: any) => g.guest_email));
 
   const alertMessage =
     alertType === "high_glucose"
@@ -48,7 +48,7 @@ export async function sendAlertEmail(
       : `Se ha registrado un valor de glucosa bajo: ${value} mg/dL. Por favor, verifica el estado de salud.`;
 
   // Send email to each guest
-  const emailPromises = guests.map((guest) =>
+  const emailPromises = guests.map((guest: any) =>
     sendEmail({
       to: guest.guest_email,
       subject: alertMessage,

@@ -44,7 +44,7 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(
         process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-      ),
+      ) as BufferSource,
     });
 
     // Save subscription to server (don't fail if this fails)

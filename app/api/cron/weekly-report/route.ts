@@ -43,7 +43,7 @@ export async function GET(request: Request) {
           .eq("user_id", user.id)
           .eq("status", "active");
 
-        const recipients = [user.email, ...(guests?.map((g) => g.guest_email) || [])];
+        const recipients = [user.email, ...(guests?.map((g: any) => g.guest_email) || [])];
 
         // Generate email content
         const weekRange = `${format(report.weekStart, "dd/MM", { locale: es })} - ${format(report.weekEnd, "dd/MM/yyyy", { locale: es })}`;
