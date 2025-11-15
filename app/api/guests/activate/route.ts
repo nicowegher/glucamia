@@ -33,12 +33,9 @@ export async function POST(request: Request) {
     }
 
     // Activate guest
-    const updateData: Database["public"]["Tables"]["guests"]["Update"] = {
-      status: "active",
-    };
     const { error: updateError } = await supabase
       .from("guests")
-      .update(updateData)
+      .update({ status: "active" } as Database["public"]["Tables"]["guests"]["Update"])
       .eq("id", guest.id);
 
     if (updateError) {
