@@ -52,7 +52,7 @@ export async function generateWeeklyReport(userId: string) {
 
   if (glucoseMeasurements.length > 0) {
     const values = glucoseMeasurements.map((m: any) => Number(m.value));
-    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+    const avg = values.reduce((a: number, b: number) => a + b, 0) / values.length;
     const max = Math.max(...values);
     const min = Math.min(...values);
 
