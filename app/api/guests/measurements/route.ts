@@ -1,5 +1,6 @@
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { Guest, Measurement } from "@/types";
 
 export async function GET(request: Request) {
   try {
@@ -20,7 +21,8 @@ export async function GET(request: Request) {
       .from("guests")
       .select("user_id, status")
       .eq("token", token)
-      .single();
+      .single()
+      .returns<Pick<Guest, "user_id" | "status">>();
 
     if (guestError || !guest || guest.status !== "active") {
       return NextResponse.json(
@@ -35,7 +37,8 @@ export async function GET(request: Request) {
       .select("*")
       .eq("user_id", guest.user_id)
       .order("date", { ascending: false })
-      .limit(100);
+      .limit(100)
+      .returns<Measurement[]>();
 
     if (error) {
       throw error;

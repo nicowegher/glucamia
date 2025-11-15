@@ -3,6 +3,7 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { sendEmail } from "@/lib/email/client";
 import { NextResponse } from "next/server";
 import { randomBytes } from "crypto";
+import { Guest, User } from "@/types";
 
 export async function POST(request: Request) {
   try {
@@ -32,7 +33,8 @@ export async function POST(request: Request) {
       .select("*")
       .eq("user_id", user.id)
       .eq("guest_email", email)
-      .single();
+      .single()
+      .returns<Guest>();
 
     if (existingGuest) {
       return NextResponse.json(
@@ -50,11 +52,12 @@ export async function POST(request: Request) {
       .insert({
         user_id: user.id,
         guest_email: email,
-        status: "pending",
+        status: "pending" as const,
         token,
       })
       .select()
-      .single();
+      .single()
+      .returns<Guest>();
 
     if (guestError) {
       throw guestError;
@@ -65,7 +68,8 @@ export async function POST(request: Request) {
       .from("users")
       .select("name, email")
       .eq("id", user.id)
-      .single();
+      .single()
+      .returns<Pick<User, "name" | "email">>();
 
     // Validate Gmail configuration
     if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { User } from "@/types";
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -21,7 +22,8 @@ export async function GET(request: Request) {
       .from("users")
       .select("onboarding_completed")
       .eq("id", user.id)
-      .single();
+      .single()
+      .returns<Pick<User, "onboarding_completed">>();
 
     if (userData && !userData.onboarding_completed) {
       return NextResponse.redirect(new URL("/onboarding", request.url));

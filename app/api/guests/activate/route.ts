@@ -1,5 +1,6 @@
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { Guest } from "@/types";
 
 export async function POST(request: Request) {
   try {
@@ -20,7 +21,8 @@ export async function POST(request: Request) {
       .from("guests")
       .select("*")
       .eq("token", token)
-      .single();
+      .single()
+      .returns<Guest>();
 
     if (findError || !guest) {
       return NextResponse.json(
@@ -32,8 +34,9 @@ export async function POST(request: Request) {
     // Activate guest
     const { error: updateError } = await supabase
       .from("guests")
-      .update({ status: "active" })
-      .eq("id", guest.id);
+      .update({ status: "active" as const })
+      .eq("id", guest.id)
+      .returns<Guest[]>();
 
     if (updateError) {
       throw updateError;

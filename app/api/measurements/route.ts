@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { checkGlucoseThresholds } from "@/lib/alerts/checkThresholds";
+import { Measurement } from "@/types";
 
 export async function GET(request: Request) {
   try {
@@ -81,7 +82,8 @@ export async function POST(request: Request) {
         label: label || null,
       })
       .select()
-      .single();
+      .single()
+      .returns<Measurement>();
 
     if (error) {
       throw error;
