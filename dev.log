@@ -86,6 +86,6 @@
     - Simplificar vercel.json (dejar que Vercel detecte Next.js automáticamente)
     - Mover themeColor a viewport export (corregido warning)
     - Actualizar configuración de Next.js
-  - Estado: Problema conocido de Next.js 16.0.3 con Vercel
-  - Workaround posible: Contactar soporte de Vercel o considerar downgrade temporal a Next.js 15
+  - **Solución aplicada**: Downgrade a Next.js 15.5.6 (última versión estable de la 15)
+  - Estado: Resuelto - Build funciona correctamente con Next.js 15
 
