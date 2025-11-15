@@ -70,8 +70,7 @@ export default function ShareWhatsAppButton({
       // @ts-expect-error - canShare check for Web Share API file support
       if (navigator.share && navigator.canShare) {
         try {
-          // @ts-expect-error - canShare may not be in all TypeScript definitions
-          canShareFiles = navigator.canShare({ files: [file] });
+          canShareFiles = (navigator as any).canShare({ files: [file] });
         } catch (e) {
           canShareFiles = false;
         }

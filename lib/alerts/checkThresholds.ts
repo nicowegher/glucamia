@@ -10,7 +10,7 @@ export async function checkGlucoseThresholds(
   const supabase = await createServiceRoleClient();
 
   // Get user preferences
-  const { data: preferences, error: prefError } = await supabase
+  const { data: preferences, error: prefError } = await (supabase as any)
     .from("user_preferences")
     .select("*")
     .eq("user_id", userId)
@@ -47,7 +47,7 @@ export async function checkGlucoseThresholds(
   }
 
   // Create alert record
-  const { data: alert, error } = await supabase
+  const { data: alert, error } = await (supabase as any)
     .from("alerts")
     .insert({
       user_id: userId,
@@ -78,7 +78,7 @@ export async function checkGlucoseThresholds(
   );
 
   // Update alert as notified
-  await supabase
+  await (supabase as any)
     .from("alerts")
     .update({ notified_guests: true })
     .eq("id", alert.id);
