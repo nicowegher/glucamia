@@ -1,65 +1,245 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { Measurement } from "@/types";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import MeasurementCard from "@/components/dashboard/MeasurementCard";
+import GlucoseChart from "@/components/dashboard/GlucoseChart";
+import ShareWhatsAppButton from "@/components/dashboard/ShareWhatsAppButton";
+import { getDateRange } from "@/lib/utils/date";
+import { UserPreferences } from "@/types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu, Settings, LogOut } from "lucide-react";
+import BottomNavigation from "@/components/navigation/BottomNavigation";
+
+type FilterType = "today" | "week" | "month" | "all";
+type TabType = "records" | "reports";
+
+export default function HomePage() {
+  const router = useRouter();
+  const supabase = createClient();
+  const [user, setUser] = useState<any>(null);
+  const [measurements, setMeasurements] = useState<Measurement[]>([]);
+  const [preferences, setPreferences] = useState<UserPreferences | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<FilterType>("all");
+  const [activeTab, setActiveTab] = useState<TabType>("records");
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+      if (!user) {
+        router.push("/login");
+      } else {
+        // Fetch preferences
+        const { data } = await supabase
+          .from("user_preferences")
+          .select("*")
+          .eq("user_id", user.id)
+          .single();
+        setPreferences(data);
+      }
+    };
+    getUser();
+  }, [router, supabase.auth]);
+
+  useEffect(() => {
+    if (user) {
+      fetchMeasurements();
+    }
+  }, [user, filter, activeTab]);
+
+  const fetchMeasurements = async () => {
+    try {
+      setLoading(true);
+      let url = "/api/measurements";
+      
+      // Only apply filter in reports tab
+      // In records tab, always fetch all measurements
+      if (activeTab === "reports" && filter !== "all") {
+        const range = getDateRange(filter);
+        url += `?start=${range.start.toISOString()}&end=${range.end.toISOString()}`;
+      }
+      // If records tab, fetch all (no filter)
+
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Error al cargar mediciones");
+      
+      const data = await response.json();
+      setMeasurements(data);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
+
+  if (!user || loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-xl text-muted-foreground">Cargando...</p>
+      </div>
+    );
+  }
+
+  // Get recent measurements for records tab (last 10)
+  const recentMeasurements = activeTab === "records" 
+    ? measurements.slice(0, 10)
+    : [];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-4xl mx-auto px-4 py-8 pb-24 md:pb-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">
+              Hola, {(() => {
+                const fullName = user?.user_metadata?.full_name || user?.user_metadata?.name || "";
+                const firstName = fullName.split(" ")[0] || "Usuario";
+                return firstName;
+              })()}
+            </h1>
+            <p className="text-lg text-muted-foreground mt-1">Tu seguimiento de salud</p>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="p-2 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-muted"
+                aria-label="Menú"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem
+                onClick={() => router.push("/settings")}
+                className="cursor-pointer"
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Configuración
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="cursor-pointer text-destructive focus:text-destructive"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Salir
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        {/* Records Tab */}
+        {activeTab === "records" && (
+          <div>
+            {/* Main Action Button */}
+            <Button
+              onClick={() => router.push("/record")}
+              className="w-full mb-8"
+            >
+              + Registrar
+            </Button>
+
+            {/* Recent Measurements List */}
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">
+                Registros recientes
+              </h2>
+              {loading ? (
+                <p className="text-center py-8 text-muted-foreground">Cargando...</p>
+              ) : recentMeasurements.length === 0 ? (
+                <Card>
+                  <p className="text-center py-8 text-muted-foreground text-xl">
+                    No hay registros aún. ¡Comienza registrando tu primera medición!
+                  </p>
+                </Card>
+              ) : (
+                <div>
+                  {recentMeasurements.map((measurement) => (
+                    <MeasurementCard
+                      key={measurement.id}
+                      measurement={measurement}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Reports Tab */}
+        {activeTab === "reports" && (
+          <div>
+            {/* Filters */}
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+              <div className="flex gap-3 flex-wrap">
+                {(["today", "week", "month", "all"] as FilterType[]).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className={`px-6 py-3 text-lg font-medium rounded-lg transition-colors ${
+                      filter === f
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-card text-card-foreground hover:bg-muted border border-border"
+                    }`}
+                  >
+                    {f === "today"
+                      ? "Hoy"
+                      : f === "week"
+                      ? "Esta semana"
+                      : f === "month"
+                      ? "Este mes"
+                      : "Todos"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Chart */}
+            {measurements.filter((m) => m.type === "glucose").length > 0 && (
+              <Card className="mb-8">
+                <h2 className="text-2xl font-bold text-card-foreground mb-4">
+                  Gráfico de Glucemia
+                </h2>
+                <GlucoseChart measurements={measurements} />
+              </Card>
+            )}
+
+            {/* Share Button */}
+            {preferences && measurements.length > 0 && (
+              <div className="flex justify-center">
+                <ShareWhatsAppButton
+                  measurements={measurements}
+                  user={user}
+                  preferences={preferences}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Bottom Navigation (Mobile Only) */}
+      <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );
 }

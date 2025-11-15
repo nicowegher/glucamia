@@ -1,0 +1,80 @@
+# Dev Log - App Glucamia
+
+## 2024 - Desarrollo Inicial
+
+### Setup del Proyecto
+- [x] Inicializado Next.js 14 con TypeScript y Tailwind CSS
+- [x] Instaladas dependencias: @supabase/supabase-js, @supabase/ssr, resend, @react-pdf/renderer, recharts, date-fns, zod, web-push
+- [x] Configurado Prettier y ESLint
+- [x] Estructura de carpetas creada
+- [x] Configuración de Supabase (cliente browser y server)
+- [x] Migraciones SQL completas
+
+### Funcionalidades Implementadas
+- [x] Autenticación con Google OAuth
+- [x] Middleware de protección de rutas
+- [x] Onboarding con toggles para seguimientos
+- [x] Dashboard principal con lista de mediciones
+- [x] Formularios de registro (glucemia, presión, peso)
+- [x] Sistema de alertas (umbrales estándar: alta >180, baja <70)
+- [x] Envío de emails a invitados cuando hay alertas
+- [x] Sistema de invitados (invitación por email, activación con token)
+- [x] Dashboard de solo lectura para invitados
+- [x] Reportes semanales automáticos (cron job domingo 8 AM)
+- [x] Exportación a PDF con todos los seguimientos
+- [x] Notificaciones push del navegador (Service Worker)
+- [x] Gráficos de glucemia con Recharts
+- [x] Filtros de fecha (Hoy, Semana, Mes, Todos)
+
+### Decisiones de Diseño
+- Tipografía: Inter (Google Fonts)
+- Colores principales:
+  - Botones primarios: #2563eb (azul)
+  - Alertas alta: #ef4444 (rojo)
+  - Alertas baja: #f59e0b (amarillo)
+  - Fondo: #f9fafb (gris claro)
+  - Texto: #111827 (gris oscuro)
+- Botones: mínimo 60px altura
+- Textos: mínimo 20px móvil, 24px desktop
+- Modo oscuro: detección automática (prefers-color-scheme)
+
+### Componentes UI Creados
+- Button: Botón grande accesible con variantes (primary, secondary, danger)
+- Card: Contenedor con sombra y bordes redondeados
+- Input: Input grande con label y manejo de errores
+- Select: Select grande con label
+- Toggle: Toggle grande para activar/desactivar opciones
+
+### Base de Datos
+- Tablas creadas: users, user_preferences, measurements, guests, alerts, medications
+- RLS (Row Level Security) configurado para todas las tablas
+- Índices creados para optimizar consultas
+- Trigger automático para crear user_preferences al crear usuario
+
+### APIs Implementadas
+- `/api/auth/callback` - Callback de OAuth
+- `/api/user/preferences` - CRUD de preferencias
+- `/api/measurements` - CRUD de mediciones
+- `/api/alerts` - Verificación de umbrales y creación de alertas
+- `/api/guests` - Listar invitados
+- `/api/guests/invite` - Enviar invitación
+- `/api/guests/activate` - Activar invitado
+- `/api/guests/measurements` - Obtener mediciones para invitado
+- `/api/cron/weekly-report` - Generar reportes semanales
+- `/api/push/subscribe` - Suscribirse a notificaciones push
+
+### Notas Técnicas
+- TypeScript en modo estricto
+- Error Lens configurado para QA en tiempo real
+- Prioridad: simplicidad y accesibilidad para adultos mayores
+- Validación de glucemia: 20-600 mg/dL
+- Umbrales de alerta: no configurables (estándar: alta >180, baja <70)
+- Reportes semanales: domingo 8:00 AM (configurado en vercel.json)
+
+### Pendientes / Mejoras Futuras
+- [ ] Tabla para almacenar suscripciones push (actualmente placeholder)
+- [ ] Generación de gráficos en emails (actualmente solo texto)
+- [ ] Soporte para medicamentos (formulario creado pero no implementado completamente)
+- [ ] Mejoras en responsive design para tablets
+- [ ] Tests unitarios y de integración
+
