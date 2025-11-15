@@ -78,3 +78,14 @@
 - [ ] Mejoras en responsive design para tablets
 - [ ] Tests unitarios y de integración
 
+### Problemas Conocidos / Troubleshooting
+- **Error routes-manifest.json en Vercel (Next.js 16.0.3)**: 
+  - Error: "The file `/vercel/path0/`.next`/routes-manifest.json` couldn't be found"
+  - Build local funciona correctamente, pero Vercel tiene problemas
+  - Soluciones intentadas:
+    - Simplificar vercel.json (dejar que Vercel detecte Next.js automáticamente)
+    - Mover themeColor a viewport export (corregido warning)
+    - Actualizar configuración de Next.js
+  - Estado: Problema conocido de Next.js 16.0.3 con Vercel
+  - Workaround posible: Contactar soporte de Vercel o considerar downgrade temporal a Next.js 15
+
