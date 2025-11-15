@@ -56,8 +56,8 @@ export async function generateWeeklyReport(userId: string) {
     const max = Math.max(...values);
     const min = Math.min(...values);
 
-    const highCount = values.filter((v) => v > (preferences?.glucose_high_threshold || 180)).length;
-    const lowCount = values.filter((v) => v < (preferences?.glucose_low_threshold || 70)).length;
+    const highCount = values.filter((v: number) => v > (preferences?.glucose_high_threshold || 180)).length;
+    const lowCount = values.filter((v: number) => v < (preferences?.glucose_low_threshold || 70)).length;
 
     stats = {
       total: measurements.length,
