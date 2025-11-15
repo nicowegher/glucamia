@@ -4,7 +4,7 @@ import { sendEmail } from "@/lib/email/client";
 import { NextResponse } from "next/server";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { User } from "@/types";
+import { User, Guest } from "@/types";
 
 export async function GET(request: Request) {
   try {
@@ -41,7 +41,8 @@ export async function GET(request: Request) {
           .from("guests")
           .select("guest_email")
           .eq("user_id", user.id)
-          .eq("status", "active");
+          .eq("status", "active")
+          .returns<Pick<Guest, "guest_email">[]>();
 
         const recipients = [user.email, ...(guests?.map((g) => g.guest_email) || [])];
 
