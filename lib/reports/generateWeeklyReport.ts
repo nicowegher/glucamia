@@ -6,7 +6,7 @@ export async function generateWeeklyReport(userId: string) {
   const supabase = await createServiceRoleClient();
 
   // Get user info
-  const { data: user } = await supabase
+  const { data: user } = await (supabase as any)
     .from("users")
     .select("email, name")
     .eq("id", userId)
@@ -15,7 +15,7 @@ export async function generateWeeklyReport(userId: string) {
   if (!user) return null;
 
   // Get user preferences
-  const { data: preferences } = await supabase
+  const { data: preferences } = await (supabase as any)
     .from("user_preferences")
     .select("*")
     .eq("user_id", userId)
@@ -27,7 +27,7 @@ export async function generateWeeklyReport(userId: string) {
   const weekEnd = endOfWeek(now, { locale: es });
 
   // Get measurements for the week
-  const { data: measurements } = await supabase
+  const { data: measurements } = await (supabase as any)
     .from("measurements")
     .select("*")
     .eq("user_id", userId)
@@ -47,11 +47,11 @@ export async function generateWeeklyReport(userId: string) {
   }
 
   // Calculate statistics for glucose
-  const glucoseMeasurements = measurements.filter((m) => m.type === "glucose");
+  const glucoseMeasurements = measurements.filter((m: any) => m.type === "glucose");
   let stats = null;
 
   if (glucoseMeasurements.length > 0) {
-    const values = glucoseMeasurements.map((m) => Number(m.value));
+    const values = glucoseMeasurements.map((m: any) => Number(m.value));
     const avg = values.reduce((a, b) => a + b, 0) / values.length;
     const max = Math.max(...values);
     const min = Math.min(...values);
