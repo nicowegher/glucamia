@@ -8,6 +8,7 @@ import GlucoseForm from "@/components/forms/GlucoseForm";
 import BloodPressureForm from "@/components/forms/BloodPressureForm";
 import WeightForm from "@/components/forms/WeightForm";
 import Select from "@/components/ui/Select";
+import { UserPreferences } from "@/types";
 
 type MeasurementFormType = "glucose" | "bp" | "weight" | null;
 
@@ -15,7 +16,7 @@ export default function RecordPage() {
   const router = useRouter();
   const supabase = createClient();
   const [formType, setFormType] = useState<MeasurementFormType>(null);
-  const [userPreferences, setUserPreferences] = useState<any>(null);
+  const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function RecordPage() {
         .from("user_preferences")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .single<UserPreferences>();
 
       setUserPreferences(data);
 
