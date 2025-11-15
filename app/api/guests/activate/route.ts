@@ -34,9 +34,8 @@ export async function POST(request: Request) {
     // Activate guest
     const { error: updateError } = await supabase
       .from("guests")
-      .update({ status: "active" as const })
-      .eq("id", guest.id)
-      .returns<Guest[]>();
+      .update({ status: "active" })
+      .eq("id", guest.id);
 
     if (updateError) {
       throw updateError;

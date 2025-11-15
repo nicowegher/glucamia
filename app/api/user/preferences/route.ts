@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-import { UserPreferences, User } from "@/types";
 
 export async function POST(request: Request) {
   try {
@@ -25,8 +24,7 @@ export async function POST(request: Request) {
         track_medications: track_medications ?? false,
         track_weight: track_weight ?? false,
       })
-      .eq("user_id", user.id)
-      .returns<UserPreferences[]>();
+      .eq("user_id", user.id);
 
     if (prefError) {
       throw prefError;
@@ -36,8 +34,7 @@ export async function POST(request: Request) {
     const { error: userError } = await supabase
       .from("users")
       .update({ onboarding_completed: true })
-      .eq("id", user.id)
-      .returns<User[]>();
+      .eq("id", user.id);
 
     if (userError) {
       throw userError;
