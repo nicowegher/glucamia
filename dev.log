@@ -79,13 +79,14 @@
 - [ ] Tests unitarios y de integración
 
 ### Problemas Conocidos / Troubleshooting
-- **Error routes-manifest.json en Vercel (Next.js 16.0.3)**: 
+- **Error routes-manifest.json en Vercel**: 
   - Error: "The file `/vercel/path0/`.next`/routes-manifest.json` couldn't be found"
   - Build local funciona correctamente, pero Vercel tiene problemas
-  - Soluciones intentadas:
-    - Simplificar vercel.json (dejar que Vercel detecte Next.js automáticamente)
-    - Mover themeColor a viewport export (corregido warning)
-    - Actualizar configuración de Next.js
-  - **Solución aplicada**: Downgrade a Next.js 15.5.6 (última versión estable de la 15)
-  - Estado: Resuelto - Build funciona correctamente con Next.js 15
+  - Soluciones aplicadas:
+    - Downgrade a Next.js 15.5.6 (última versión estable de la 15)
+    - Corregir configuración de ESLint (usar FlatCompat para Next.js 15)
+    - Configurar Next.js para ignorar errores de ESLint durante el build
+    - Agregar buildCommand y outputDirectory explícitos en vercel.json
+  - Estado: En progreso - Build local funciona, pendiente verificar en Vercel
+  - Nota: Si el error persiste, puede ser necesario limpiar el caché de Vercel o contactar soporte
 
