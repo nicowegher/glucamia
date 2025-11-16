@@ -1,13 +1,20 @@
 {
-  "name": "Glucamia - Seguimiento de Glucemia",
+  "name": "Glucamia",
   "short_name": "Glucamia",
-  "description": "Aplicación para seguimiento de glucemia y salud básica",
   "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "scope": "/",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone", "minimal-ui", "browser"],
+  "background_color": "#FFCD3C",
+  "theme_color": "#FFCD3C",
   "orientation": "portrait",
   "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/icon-72x72.png",
       "sizes": "72x72",
@@ -43,6 +50,12 @@
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon-384x384.png",
