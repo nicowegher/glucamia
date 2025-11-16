@@ -148,9 +148,39 @@ export default function HomePage() {
           </DropdownMenu>
         </div>
 
+        {/* Desktop Tabs Navigation (md and up) */}
+        <div className="hidden md:flex items-center gap-3 mb-8" role="tablist" aria-label="Secciones">
+          <button
+            role="tab"
+            aria-selected={activeTab === "records"}
+            aria-controls="tab-panel-records"
+            className={`px-5 py-3 rounded-lg text-base font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
+              activeTab === "records"
+                ? "bg-primary text-primary-foreground"
+                : "bg-card text-card-foreground hover:bg-muted border border-border"
+            }`}
+            onClick={() => setActiveTab("records")}
+          >
+            Registros
+          </button>
+          <button
+            role="tab"
+            aria-selected={activeTab === "reports"}
+            aria-controls="tab-panel-reports"
+            className={`px-5 py-3 rounded-lg text-base font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
+              activeTab === "reports"
+                ? "bg-primary text-primary-foreground"
+                : "bg-card text-card-foreground hover:bg-muted border border-border"
+            }`}
+            onClick={() => setActiveTab("reports")}
+          >
+            Reportes
+          </button>
+        </div>
+
         {/* Records Tab */}
         {activeTab === "records" && (
-          <div>
+          <div id="tab-panel-records" role="tabpanel" aria-labelledby="Registros">
             {/* Main Action Button */}
             <Button
               onClick={() => router.push("/record")}
@@ -188,7 +218,7 @@ export default function HomePage() {
 
         {/* Reports Tab */}
         {activeTab === "reports" && (
-          <div>
+          <div id="tab-panel-reports" role="tabpanel" aria-labelledby="Reportes">
             {/* Filters */}
             <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
               <div className="flex gap-3 flex-wrap">
