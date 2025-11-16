@@ -42,25 +42,39 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md space-y-8 text-center">
+      <div className="w-full max-w-md space-y-16 md:space-y-20 text-center">
         <div>
-          <h1 className="text-4xl font-bold text-foreground mb-2">
-            Glucamia
-          </h1>
-          <p className="text-xl text-muted-foreground">
+          <div className="mx-auto mb-1 flex items-center justify-center gap-2">
+            <img
+              src="/web-app-manifest-512x512.png"
+              alt="glucamia"
+              className="h-10 w-10 rounded"
+            />
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+              glucamia
+            </h1>
+          </div>
+          <p className="text-lg md:text-xl text-muted-foreground">
             Seguimiento de glucemia y salud
           </p>
         </div>
-        <Button
-          onClick={handleLogin}
-          disabled={loading}
-          className="w-full"
-        >
-          {loading ? "Cargando..." : "Iniciar sesión con Google"}
-        </Button>
-        <p className="text-sm text-muted-foreground">
-          Solo necesitas tu cuenta de Google para comenzar
-        </p>
+        <div className="space-y-1 text-base text-muted-foreground">
+          <p>⚡ Registros en segundos</p>
+          <p>🔔 Alertas a familiares</p>
+          <p>📄 Reportes para tu médico</p>
+        </div>
+        <div className="space-y-2">
+          <Button
+            onClick={handleLogin}
+            disabled={loading}
+            className="w-full"
+          >
+            {loading ? "Cargando..." : "Iniciar sesión con Google"}
+          </Button>
+          <p className="text-sm text-muted-foreground">
+            Solo necesitas tu cuenta de Google para comenzar
+          </p>
+        </div>
       </div>
     </div>
   );
