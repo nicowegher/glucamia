@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, Settings, LogOut } from "lucide-react";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
+import TopBrand from "@/components/navigation/TopBrand";
 
 type FilterType = "today" | "week" | "month" | "all";
 type TabType = "records" | "reports";
@@ -106,19 +107,10 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 py-8 pb-24 md:pb-8">
+      <div className="max-w-4xl mx-auto px-4 pt-1 md:pt-4 pb-24 md:pb-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">
-              Hola, {(() => {
-                const fullName = user?.user_metadata?.full_name || user?.user_metadata?.name || "";
-                const firstName = fullName.split(" ")[0] || "Usuario";
-                return firstName;
-              })()}
-            </h1>
-            <p className="text-lg text-muted-foreground mt-1">Tu seguimiento de salud</p>
-          </div>
+        <div className="flex items-center justify-between mb-6">
+          <TopBrand />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
@@ -146,6 +138,16 @@ export default function HomePage() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        </div>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-foreground">
+            Hola, {(() => {
+              const fullName = user?.user_metadata?.full_name || user?.user_metadata?.name || "";
+              const firstName = fullName.split(" ")[0] || "Usuario";
+              return firstName;
+            })()}
+          </h1>
+          <p className="text-lg text-muted-foreground mt-1">Tu seguimiento de salud</p>
         </div>
 
         {/* Desktop Tabs Navigation (md and up) */}
