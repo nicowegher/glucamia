@@ -31,7 +31,9 @@
   "background_color": "#FFCD3C",
   "display": "fullscreen",
   "display_override": ["fullscreen", "standalone", "minimal-ui", "browser"],
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "scope": "/",
+  "id": "/",
+  "prefer_related_applications": false,
   "orientation": "portrait"
 }

@@ -1,12 +1,14 @@
 {
   "name": "Glucamia",
   "short_name": "Glucamia",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "fullscreen",
   "display_override": ["fullscreen", "standalone", "minimal-ui", "browser"],
   "background_color": "#FFCD3C",
   "theme_color": "#FFCD3C",
+  "id": "/",
+  "prefer_related_applications": false,
   "orientation": "portrait",
   "icons": [
     {
