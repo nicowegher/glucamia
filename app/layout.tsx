@@ -8,6 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  applicationName: "Glucamia",
   title: "Glucamia - Seguimiento de Glucemia",
   description: "Aplicación para seguimiento de glucemia y salud básica",
   manifest: "/site.webmanifest",
@@ -15,6 +16,9 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Glucamia",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
   },
   icons: {
     icon: [
