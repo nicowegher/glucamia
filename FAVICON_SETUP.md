@@ -109,5 +109,5 @@ Después de agregar los iconos:
 - El `favicon.ico` puede estar en `app/` o `public/` (Next.js lo detecta automáticamente)
 - Todos los demás iconos deben estar en `public/`
 - Los iconos deben ser PNG con fondo transparente o sólido según el diseño
-- El color del tema está configurado como `#3b82f6` (azul) en `manifest.json` y `layout.tsx`
+- El color del tema está configurado como `#FFCD3C` en `site.webmanifest` y `layout.tsx`
 

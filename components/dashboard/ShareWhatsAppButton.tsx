@@ -4,7 +4,6 @@ import { useState } from "react";
 import { pdf } from "@react-pdf/renderer";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import Input from "@/components/ui/Input";
 import ReportTemplate from "@/components/pdf/ReportTemplate";
 import { Measurement, UserPreferences } from "@/types";
 import { subDays } from "date-fns";
@@ -16,28 +15,50 @@ interface ShareWhatsAppButtonProps {
   preferences: UserPreferences;
 }
 
+type DateRangeOption = "60" | "30" | "7" | "all";
+
 export default function ShareWhatsAppButton({
   measurements,
   user,
   preferences,
 }: ShareWhatsAppButtonProps) {
   const [showModal, setShowModal] = useState(false);
-  const [startDate, setStartDate] = useState(
-    formatDateInput(subDays(new Date(), 30))
-  );
-  const [endDate, setEndDate] = useState(formatDateInput(new Date()));
+  const [selectedRange, setSelectedRange] = useState<DateRangeOption>("60");
   const [loading, setLoading] = useState(false);
 
   function formatDateInput(date: Date): string {
     return date.toISOString().split("T")[0];
   }
 
+  const getDateRange = (range: DateRangeOption) => {
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+    
+    if (range === "all") {
+      // Para "Todos", usar la fecha más antigua disponible o una fecha muy antigua
+      const oldestMeasurement = measurements.length > 0 
+        ? new Date(Math.min(...measurements.map(m => new Date(m.date).getTime())))
+        : subDays(end, 365);
+      return {
+        start: oldestMeasurement,
+        end: end,
+      };
+    }
+    
+    const days = parseInt(range);
+    const start = subDays(end, days);
+    start.setHours(0, 0, 0, 0);
+    
+    return { start, end };
+  };
+
+  const dateRange = getDateRange(selectedRange);
+  const startDate = formatDateInput(dateRange.start);
+  const endDate = formatDateInput(dateRange.end);
+
   const filteredMeasurements = measurements.filter((m) => {
     const mDate = new Date(m.date);
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    end.setHours(23, 59, 59, 999);
-    return mDate >= start && mDate <= end;
+    return mDate >= dateRange.start && mDate <= dateRange.end;
   });
 
   const handleShare = async () => {
@@ -162,19 +183,52 @@ export default function ShareWhatsAppButton({
             <h2 className="text-2xl font-bold text-card-foreground mb-4">
               Compartir Reporte
             </h2>
-            <div className="space-y-4 mb-6">
-              <Input
-                label="Fecha inicial"
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
-              <Input
-                label="Fecha final"
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
+            <div className="space-y-3 mb-6">
+              <label className="text-sm font-medium text-card-foreground block mb-2">
+                Selecciona el rango de fechas:
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setSelectedRange("60")}
+                  className={`px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                    selectedRange === "60"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-card-foreground hover:bg-muted border border-border"
+                  }`}
+                >
+                  Últimos 60 días
+                </button>
+                <button
+                  onClick={() => setSelectedRange("30")}
+                  className={`px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                    selectedRange === "30"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-card-foreground hover:bg-muted border border-border"
+                  }`}
+                >
+                  Últimos 30 días
+                </button>
+                <button
+                  onClick={() => setSelectedRange("7")}
+                  className={`px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                    selectedRange === "7"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-card-foreground hover:bg-muted border border-border"
+                  }`}
+                >
+                  Últimos 7 días
+                </button>
+                <button
+                  onClick={() => setSelectedRange("all")}
+                  className={`px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                    selectedRange === "all"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-card-foreground hover:bg-muted border border-border"
+                  }`}
+                >
+                  Todos
+                </button>
+              </div>
             </div>
             {filteredMeasurements.length === 0 ? (
               <p className="text-destructive mb-4">

@@ -1,6 +1,7 @@
 import { Measurement } from "@/types";
 import Card from "@/components/ui/Card";
-import { formatDate } from "@/lib/utils/date";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 interface MeasurementCardProps {
   measurement: Measurement;
@@ -39,15 +40,15 @@ export default function MeasurementCard({ measurement }: MeasurementCardProps) {
 
   const getValueDisplay = () => {
     if (measurement.type === "bp" && measurement.value2) {
-      return `${measurement.value}/${measurement.value2} mmHg`;
+      return { value: `${measurement.value}/${measurement.value2}`, unit: "mmHg" };
     }
     if (measurement.type === "glucose") {
-      return `${measurement.value} mg/dL`;
+      return { value: measurement.value.toString(), unit: "mg/dL" };
     }
     if (measurement.type === "weight") {
-      return `${measurement.value} kg`;
+      return { value: measurement.value.toString(), unit: "kg" };
     }
-    return measurement.value.toString();
+    return { value: measurement.value.toString(), unit: "" };
   };
 
   const getAlertClass = () => {
@@ -62,29 +63,48 @@ export default function MeasurementCard({ measurement }: MeasurementCardProps) {
     return "";
   };
 
+  const valueDisplay = getValueDisplay();
+  const date = new Date(measurement.date);
+  const formattedDate = format(date, "dd/MMM", { locale: es });
+  const formattedTime = format(date, "HH:mm", { locale: es });
+
   return (
-    <Card className={`${getAlertClass()} mb-4`}>
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-2xl">{getTypeIcon()}</span>
-            <h3 className="text-xl font-semibold text-card-foreground">
+    <Card className={`${getAlertClass()} mb-2`}>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <span className="text-base flex-shrink-0">{getTypeIcon()}</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-muted-foreground">
               {getTypeLabel()}
-            </h3>
+            </p>
+            <div className="flex items-baseline gap-1">
+              <p className="text-sm font-medium text-card-foreground">
+                {formattedDate}
+              </p>
+              <p className="text-xs font-normal text-muted-foreground">
+                {formattedTime}
+              </p>
+            </div>
+            {measurement.comment && (
+              <p className="text-xs text-card-foreground mt-0.5 line-clamp-1">{measurement.comment}</p>
+            )}
           </div>
-          <p className="text-3xl font-bold text-card-foreground mb-2">
-            {getValueDisplay()}
-          </p>
-          <p className="text-base text-muted-foreground mb-1">
-            {formatDate(measurement.date)}
-          </p>
+        </div>
+        <div className="flex flex-col items-end gap-1 flex-shrink-0">
+          <div className="flex items-baseline gap-1">
+            <span className="text-xl font-bold text-card-foreground">
+              {valueDisplay.value}
+            </span>
+            {valueDisplay.unit && (
+              <span className="text-base font-normal text-card-foreground">
+                {valueDisplay.unit}
+              </span>
+            )}
+          </div>
           {measurement.label && (
-            <span className="inline-block px-3 py-1 text-sm font-medium bg-accent text-accent-foreground rounded-full mb-2">
+            <span className="inline-block px-1.5 py-0.5 text-xs font-medium bg-accent text-accent-foreground rounded-full">
               {measurement.label}
             </span>
-          )}
-          {measurement.comment && (
-            <p className="text-base text-card-foreground mt-2">{measurement.comment}</p>
           )}
         </div>
       </div>

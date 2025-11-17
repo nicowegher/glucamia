@@ -186,14 +186,14 @@ export default function HomePage() {
             {/* Main Action Button */}
             <Button
               onClick={() => router.push("/record")}
-              className="w-full mb-8"
+              className="w-full mb-6 md:mb-8"
             >
               + Registrar
             </Button>
 
             {/* Recent Measurements List */}
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-4">
+              <h2 className="text-xl md:text-2xl font-bold text-foreground mb-3 md:mb-4">
                 Registros recientes
               </h2>
               {loading ? (
@@ -222,13 +222,13 @@ export default function HomePage() {
         {activeTab === "reports" && (
           <div id="tab-panel-reports" role="tabpanel" aria-labelledby="Reportes">
             {/* Filters */}
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-              <div className="flex gap-3 flex-wrap">
+            <div className="mb-6">
+              <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide">
                 {(["today", "week", "month", "all"] as FilterType[]).map((f) => (
                   <button
                     key={f}
                     onClick={() => setFilter(f)}
-                    className={`px-6 py-3 text-lg font-medium rounded-lg transition-colors ${
+                    className={`px-3 py-2 md:px-6 md:py-3 text-sm md:text-lg font-medium rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
                       filter === f
                         ? "bg-primary text-primary-foreground"
                         : "bg-card text-card-foreground hover:bg-muted border border-border"

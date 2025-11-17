@@ -184,6 +184,15 @@ body {
     letter-spacing: var(--tracking-normal);
   }
   
+  /* Ocultar scrollbar pero mantener funcionalidad de scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
   /* Estilos para Recharts - consistentes con ChatGPT */
   .recharts-cartesian-axis-tick text {
     fill: var(--muted-foreground) !important;
