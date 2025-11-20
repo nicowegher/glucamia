@@ -1,6 +1,6 @@
 "use client";
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { Measurement } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -66,7 +66,7 @@ export default function GlucoseChart({ measurements }: GlucoseChartProps) {
       <ResponsiveContainer width="100%" height="100%">
         <LineChart 
           data={glucoseData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+          margin={{ top: 15, right: 40, left: 0, bottom: 20 }}
         >
           <defs>
             <linearGradient id="glucoseGradient" x1="0" y1="0" x2="0" y2="1">
@@ -83,16 +83,42 @@ export default function GlucoseChart({ measurements }: GlucoseChartProps) {
             dataKey="date"
             angle={-45}
             textAnchor="end"
-            height={80}
+            height={45}
             axisLine={false}
             tickLine={false}
-            tickMargin={8}
+            tickMargin={4}
+            tick={{ fontSize: 10, fill: "#6b7280" }}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tickMargin={8}
-            width={60}
+            tickMargin={4}
+            width={40}
+            tick={{ fontSize: 10, fill: "#6b7280" }}
+          />
+          <ReferenceLine
+            y={70}
+            stroke="#93c5fd"
+            strokeWidth={1}
+            strokeDasharray="4 2"
+            label={{
+              value: "70",
+              position: "right",
+              fill: "#60a5fa",
+              fontSize: 10,
+            }}
+          />
+          <ReferenceLine
+            y={180}
+            stroke="#fecaca"
+            strokeWidth={1}
+            strokeDasharray="4 2"
+            label={{
+              value: "180",
+              position: "right",
+              fill: "#f87171",
+              fontSize: 10,
+            }}
           />
           <Tooltip
             content={({ active, payload }) => {

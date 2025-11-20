@@ -172,8 +172,11 @@ export default function ShareWhatsAppButton({
 
   return (
     <>
-      <Button variant="secondary" onClick={() => setShowModal(true)}>
-        <Share2 className="mr-2 h-5 w-5" />
+      <Button
+        onClick={() => setShowModal(true)}
+        className="bg-[#25D366] hover:bg-[#1DA851] text-white border-transparent focus-visible:ring-[#128C7E] flex items-center justify-center gap-2"
+      >
+        <Share2 className="h-5 w-5" />
         Compartir por WhatsApp
       </Button>
 

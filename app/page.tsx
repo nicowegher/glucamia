@@ -22,7 +22,7 @@ import { Menu, Settings, LogOut } from "lucide-react";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 import TopBrand from "@/components/navigation/TopBrand";
 
-type FilterType = "today" | "week" | "month" | "all";
+type FilterType = "week" | "month" | "all";
 type TabType = "records" | "reports";
 
 export default function HomePage() {
@@ -34,6 +34,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>("all");
   const [activeTab, setActiveTab] = useState<TabType>("records");
+  const [recordsToShow, setRecordsToShow] = useState<number>(20);
 
   useEffect(() => {
     const getUser = async () => {
@@ -61,6 +62,11 @@ export default function HomePage() {
       fetchMeasurements();
     }
   }, [user, filter, activeTab]);
+
+  // Reset records to show when tab changes or measurements are reloaded
+  useEffect(() => {
+    setRecordsToShow(20);
+  }, [activeTab, measurements.length]);
 
   const fetchMeasurements = async () => {
     try {
@@ -100,10 +106,16 @@ export default function HomePage() {
     );
   }
 
-  // Get recent measurements for records tab (last 10)
+  // Get recent measurements for records tab
   const recentMeasurements = activeTab === "records" 
-    ? measurements.slice(0, 10)
+    ? measurements.slice(0, recordsToShow)
     : [];
+  
+  const hasMoreRecords = activeTab === "records" && measurements.length > recordsToShow;
+  
+  const handleLoadMore = () => {
+    setRecordsToShow(prev => prev + 20);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -212,6 +224,18 @@ export default function HomePage() {
                       measurement={measurement}
                     />
                   ))}
+                  {hasMoreRecords && (
+                    <div className="flex justify-center mt-6">
+                      <Button
+                        onClick={handleLoadMore}
+                        variant="secondary"
+                        size="md"
+                        className="w-full md:w-auto"
+                      >
+                        Cargar más
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -224,7 +248,7 @@ export default function HomePage() {
             {/* Filters */}
             <div className="mb-6">
               <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                {(["today", "week", "month", "all"] as FilterType[]).map((f) => (
+                {(["week", "month", "all"] as FilterType[]).map((f) => (
                   <button
                     key={f}
                     onClick={() => setFilter(f)}
@@ -234,9 +258,7 @@ export default function HomePage() {
                         : "bg-card text-card-foreground hover:bg-muted border border-border"
                     }`}
                   >
-                    {f === "today"
-                      ? "Hoy"
-                      : f === "week"
+                    {f === "week"
                       ? "Esta semana"
                       : f === "month"
                       ? "Este mes"
