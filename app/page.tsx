@@ -22,7 +22,7 @@ import { Menu, Settings, LogOut } from "lucide-react";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 import TopBrand from "@/components/navigation/TopBrand";
 
-type FilterType = "week" | "month" | "all";
+type FilterType = "last7" | "last30" | "last90" | "all";
 type TabType = "records" | "reports";
 
 export default function HomePage() {
@@ -247,22 +247,24 @@ export default function HomePage() {
           <div id="tab-panel-reports" role="tabpanel" aria-labelledby="Reportes">
             {/* Filters */}
             <div className="mb-6">
-              <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                {(["week", "month", "all"] as FilterType[]).map((f) => (
+              <div className="grid grid-cols-4 gap-2 md:flex md:flex-row md:gap-3">
+                {(["last7", "last30", "last90", "all"] as FilterType[]).map((f) => (
                   <button
                     key={f}
                     onClick={() => setFilter(f)}
-                    className={`px-3 py-2 md:px-6 md:py-3 text-sm md:text-lg font-medium rounded-lg transition-colors whitespace-nowrap flex-shrink-0 ${
+                    className={`px-2 py-3 md:px-6 md:py-3 text-sm md:text-lg font-semibold rounded-lg transition-colors text-center leading-tight ${
                       filter === f
                         ? "bg-primary text-primary-foreground"
                         : "bg-card text-card-foreground hover:bg-muted border border-border"
                     }`}
                   >
-                    {f === "week"
-                      ? "Esta semana"
-                      : f === "month"
-                      ? "Este mes"
-                      : "Todos"}
+                    {f === "last7"
+                      ? "Últimos 7 días"
+                      : f === "last30"
+                      ? "Últimos 30 días"
+                      : f === "last90"
+                      ? "Últimos 90 días"
+                      : "Todos los registros"}
                   </button>
                 ))}
               </div>

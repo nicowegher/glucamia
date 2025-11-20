@@ -33,8 +33,11 @@ export function datetimeLocalToISO(datetimeLocal: string): string {
   return date.toISOString();
 }
 
-export function getDateRange(filter: "today" | "week" | "month" | "custom", customStart?: Date, customEnd?: Date) {
+type DateRangeFilter = "today" | "week" | "month" | "custom" | "last7" | "last30" | "last90";
+
+export function getDateRange(filter: DateRangeFilter = "today", customStart?: Date, customEnd?: Date) {
   const now = new Date();
+  const endOfToday = endOfDay(now);
   
   switch (filter) {
     case "today":
@@ -52,15 +55,30 @@ export function getDateRange(filter: "today" | "week" | "month" | "custom", cust
         start: startOfMonth(now),
         end: endOfMonth(now),
       };
+    case "last7":
+      return {
+        start: startOfDay(subDays(endOfToday, 7)),
+        end: endOfToday,
+      };
+    case "last30":
+      return {
+        start: startOfDay(subDays(endOfToday, 30)),
+        end: endOfToday,
+      };
+    case "last90":
+      return {
+        start: startOfDay(subDays(endOfToday, 90)),
+        end: endOfToday,
+      };
     case "custom":
       return {
         start: customStart || startOfDay(now),
-        end: customEnd || endOfDay(now),
+        end: customEnd || endOfToday,
       };
     default:
       return {
-        start: subDays(now, 30),
-        end: now,
+        start: startOfDay(subDays(endOfToday, 30)),
+        end: endOfToday,
       };
   }
 }
