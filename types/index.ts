@@ -5,8 +5,9 @@ export type AlertType = "high_glucose" | "low_glucose";
 export type GuestStatus = "pending" | "active";
 
 export type GlucoseLabel =
-  | "Antes de comer"
-  | "Después de comer"
+  | "Antes de almorzar"
+  | "Después de almorzar (2hs)"
+  | "Antes de cenar"
   | "Ayunas"
   | "Otro";
 

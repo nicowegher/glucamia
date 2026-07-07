@@ -80,8 +80,9 @@ export default function GlucoseForm({ onSubmit, onCancel }: GlucoseFormProps) {
         onChange={(e) => setLabel(e.target.value as GlucoseLabel | "")}
       >
         <option value="">Seleccionar...</option>
-        <option value="Antes de comer">Antes de comer</option>
-        <option value="Después de comer">Después de comer</option>
+        <option value="Antes de almorzar">Antes de almorzar</option>
+        <option value="Después de almorzar (2hs)">Después de almorzar (2hs)</option>
+        <option value="Antes de cenar">Antes de cenar</option>
         <option value="Ayunas">Ayunas</option>
         <option value="Otro">Otro</option>
       </Select>
